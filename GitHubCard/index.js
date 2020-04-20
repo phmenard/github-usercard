@@ -134,39 +134,46 @@ const cards = document.querySelector('.cards');
 // Get my github info
 axios.get(`https://api.github.com/users/phmenard`)
   .then((response) => {
-      // Build my user card
-      cards.appendChild(createUserCard(response.data));
-      return axios.get(`https://api.github.com/users/phmenard/followers`);
+    // Build my user card
+    cards.appendChild(createUserCard(response.data));
+    return axios.get(`https://api.github.com/users/phmenard/followers`);
   })
   .then((response) => {
-    
-    response.data.forEach((follower)=>{
+
+    response.data.forEach((follower) => {
       //add my followers to the array
       theTeam.unshift(follower.login);
-            
+
     })
+
+    creatTheUserContent(theTeam);
   })
   .catch((err) => {
 
   })
 
-  console.log(theTeam);
 
-theTeam.forEach((item) => { 
-  // grab user info
-  axios.get(`https://api.github.com/users/${item}`)
-    .then((response) => {
-      const cards = document.querySelector('.cards');
-      //console.log(response);
-      // Build user card
-      cards.appendChild(createUserCard(response.data));
-      
-    })
-    
-    .catch((err) => { // Somthing bad happen
-      console.log(err);
-    })
-})
+function creatTheUserContent(team) {
+  console.log(theTeam.length);
+
+  team.forEach((item) => {
+    // grab user info
+    axios.get(`https://api.github.com/users/${item}`)
+      .then((response) => {
+        const cards = document.querySelector('.cards');
+        //console.log(response);
+        // Build user card
+        cards.appendChild(createUserCard(response.data));
+
+      })
+
+      .catch((err) => { // Somthing bad happen
+        console.log(err);
+      })
+  })
+
+
+}
 
 
 
