@@ -64,7 +64,7 @@ function createUserCard(user) {
 
   // Set user image
   const userImage = document.createElement('img');
-  userImage.src = user.data.avatar_url;
+  userImage.src = user.avatar_url;
   //userImage.alt = 'Hacking away 1989';
   userCard.appendChild(userImage);
 
@@ -73,78 +73,104 @@ function createUserCard(user) {
   cardInfo.classList.add('card-info'); // Holds all card info
 
   // Add real name
-  const realName = document.createElement('h3'); 
+  const realName = document.createElement('h3');
   realName.classList.add('name');
-  realName.textContent = user.data.name;
+  realName.textContent = user.name;
   cardInfo.appendChild(realName);
 
   // Add user name
   const userName = document.createElement('p');
   userName.classList.add('username');
-  userName.textContent = user.data.login;
+  userName.textContent = user.login;
   cardInfo.appendChild(userName);
 
   // Add location
   const location = document.createElement('p');
-  location.textContent = `Location: ${user.data.location}`;
+  location.textContent = `Location: ${user.location}`;
   cardInfo.appendChild(location);
 
   // Add profile
   const profile = document.createElement('p');
   profile.textContent = 'Profile: ';
   const profileLink = document.createElement('a');
-  profileLink.textContent = user.data.html_url
-  profileLink.href = user.data.html_url;
+  profileLink.textContent = user.html_url
+  profileLink.href = user.html_url;
   profile.appendChild(profileLink);
   cardInfo.appendChild(profile);
 
   //  Add followers
   const followers = document.createElement('p');
-  followers.textContent = `Followers: ${user.data.followers}`;
+  followers.textContent = `Followers: ${user.followers}`;
   cardInfo.appendChild(followers);
 
   // Add following 
   const following = document.createElement('p');
-  following.textContent = `Following: ${user.data.following}`;
+  following.textContent = `Following: ${user.following}`;
   cardInfo.appendChild(following);
-  
+
   // Add bio 
   const bio = document.createElement('p');
-  const bioIbfo = `Bio: <i>${user.data.bio}</i>`; // Why !!! Should use innerHTML
-  bio.innerText = bioIbfo;
+  const bioIbfo = `Bio: <i>${user.bio}</i>`; // Why !!! We should be using innerHTML
+  bio.innerHTML = bioIbfo;
 
   //bio.textContent = `Bio: ${user.data.bio}`;
   //bio.style.fontStyle = "italic"; // changes everything to italic.
   cardInfo.appendChild(bio);
 
 
-//********************* */
+  //********************* */
 
   // Keep the spaces above, may be more to add
   // Add the user card and return the new component.
   userCard.appendChild(cardInfo);
-  return userCard;    
-    
+  return userCard;
+
 }
 
 // Team Array
-theTean = ['phmenard','tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell', 'JLong5795'];
+let theTeam = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell', 'JLong5795'];
 
-theTean.forEach((item)=>{
+const cards = document.querySelector('.cards');
+// Get my github info
+axios.get(`https://api.github.com/users/phmenard`)
+  .then((response) => {
+      // Build my user card
+      cards.appendChild(createUserCard(response.data));
+      return axios.get(`https://api.github.com/users/phmenard/followers`);
+  })
+  .then((response) => {
+    
+    response.data.forEach((follower)=>{
+      //add my followers to the array
+      theTeam.unshift(follower.login);
+            
+    })
+  })
+  .catch((err) => {
+
+  })
+
+  console.log(theTeam);
+
+theTeam.forEach((item) => { 
   // grab user info
   axios.get(`https://api.github.com/users/${item}`)
-  .then((response) => {
-    const cards = document.querySelector('.cards');
-    // Build user card
-    cards.appendChild(createUserCard(response));
-  })
-  .catch((err) => { // Somthing bad happen
-    console.log(err);
-  })
+    .then((response) => {
+      const cards = document.querySelector('.cards');
+      //console.log(response);
+      // Build user card
+      cards.appendChild(createUserCard(response.data));
+      
+    })
+    
+    .catch((err) => { // Somthing bad happen
+      console.log(err);
+    })
 })
 
 
-  
+
+
 
 
 
