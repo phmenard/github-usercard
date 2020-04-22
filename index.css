@@ -95,7 +95,7 @@ body {
   width: 100%;
   padding: 20px;
   display: flex;
-  border-radius: 5px;
+  border-radius: 20px;
   box-shadow: 0 1px 6px -2px #000;
   background-color: #FFF;
   margin-bottom: 30px;
@@ -106,6 +106,8 @@ body {
   height: 150px;
   border-radius: 3px;
   margin-right: 20px;
+  border-radius: 20px;
+
 }
 
 .card .name {

@@ -1,3 +1,4 @@
+//const axios = require('axios').default;
 /* Step 1: using axios, send a GET request to the following URL 
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
@@ -53,3 +54,132 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+
+// Build the user card
+function createUserCard(user) {
+  // Create the card container
+  const userCard = document.createElement('div');
+  userCard.classList.add('card');
+
+  // Set user image
+  const userImage = document.createElement('img');
+  userImage.src = user.avatar_url;
+  //userImage.alt = 'Hacking away 1989';
+  userCard.appendChild(userImage);
+
+  // Build the card info
+  const cardInfo = document.createElement('div'); // build the parent
+  cardInfo.classList.add('card-info'); // Holds all card info
+
+  // Add real name
+  const realName = document.createElement('h3');
+  realName.classList.add('name');
+  realName.textContent = user.name;
+  cardInfo.appendChild(realName);
+
+  // Add user name
+  const userName = document.createElement('p');
+  userName.classList.add('username');
+  userName.textContent = user.login;
+  cardInfo.appendChild(userName);
+
+  // Add location
+  const location = document.createElement('p');
+  location.textContent = `Location: ${user.location}`;
+  cardInfo.appendChild(location);
+
+  // Add profile
+  const profile = document.createElement('p');
+  profile.textContent = 'Profile: ';
+  const profileLink = document.createElement('a');
+  profileLink.textContent = user.html_url
+  profileLink.href = user.html_url;
+  profile.appendChild(profileLink);
+  cardInfo.appendChild(profile);
+
+  //  Add followers
+  const followers = document.createElement('p');
+  followers.textContent = `Followers: ${user.followers}`;
+  cardInfo.appendChild(followers);
+
+  // Add following 
+  const following = document.createElement('p');
+  following.textContent = `Following: ${user.following}`;
+  cardInfo.appendChild(following);
+
+  // Add bio 
+  const bio = document.createElement('p');
+  const bioIbfo = `Bio: <i>${user.bio}</i>`; // Why !!! We should be using innerHTML
+  bio.innerHTML = bioIbfo;
+
+  //bio.textContent = `Bio: ${user.data.bio}`;
+  //bio.style.fontStyle = "italic"; // changes everything to italic.
+  cardInfo.appendChild(bio);
+
+
+  //********************* */
+
+  // Keep the spaces above, may be more to add
+  // Add the user card and return the new component.
+  userCard.appendChild(cardInfo);
+  return userCard;
+
+}
+
+// Team Array
+let theTeam = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell', 'JLong5795'];
+
+const cards = document.querySelector('.cards');
+// Get my github info
+axios.get(`https://api.github.com/users/phmenard`)
+  .then((response) => {
+    // Build my user card
+    cards.appendChild(createUserCard(response.data));
+    return axios.get(`https://api.github.com/users/phmenard/followers`);
+  })
+  .then((response) => {
+
+    response.data.forEach((follower) => {
+      //add my followers to the array
+      theTeam.unshift(follower.login);
+
+    })
+
+    creatTheUserContent(theTeam);
+  })
+  .catch((err) => {
+
+  })
+
+
+function creatTheUserContent(team) {
+  console.log(theTeam.length);
+
+  team.forEach((item) => {
+    // grab user info
+    axios.get(`https://api.github.com/users/${item}`)
+      .then((response) => {
+        const cards = document.querySelector('.cards');
+        //console.log(response);
+        // Build user card
+        cards.appendChild(createUserCard(response.data));
+
+      })
+
+      .catch((err) => { // Somthing bad happen
+        console.log(err);
+      })
+  })
+
+
+}
+
+
+
+
+
+
+
+
+
